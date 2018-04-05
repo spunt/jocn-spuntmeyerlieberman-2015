@@ -73,7 +73,7 @@ else
     load(d(1).name);
     cd ..
 end;
-    
+
 designName=strcat('design',num2str(designNums(runNum)),'.txt');
 cd design
 design=load(designName);
@@ -124,7 +124,7 @@ priorityLevel=MaxPriority(w);
 Priority(priorityLevel);
 
 % colors
-grayLevel=0;    
+grayLevel=0;
 black=BlackIndex(w); % Should equal 0.
 white=WhiteIndex(w); % Should equal 255.
 Screen('FillRect', w, grayLevel);
@@ -178,7 +178,7 @@ loadString=sprintf('LOADING ROUND %d',runNum);
 DrawFormattedText_new(w,loadString, 'center','center',white, 600, 0, 0);
 
 Screen('Flip',w);
-fmt='png';
+fmt='jpg';
 % initialize some variables
 whyStim=cell(nTrialsCond,1);
 whyName=whyStim;
@@ -225,7 +225,7 @@ cd ../../
 % COLUMN KEY
 % 1 - trial #
 % 2 - condition (1=Why, 2=How, 3=Math)
-% 3 - stimulus index 
+% 3 - stimulus index
 % 4 - intended onset
 % 5 - actual onset
 % 6 - actual offset
@@ -296,37 +296,37 @@ WaitSecs('UntilTime', anchor + Seeker(1,4));
 try
 
 for t=1:nTrials
-    
-    
+
+
     %-----------------
     % Present stimulus
-    %----------------- 
+    %-----------------
     if Seeker(t,2)==1       % why trial
-        
+
         Screen('DrawTexture',w, whyTex{Seeker(t,3)});
         Screen('Flip',w);
         stimStart=GetSecs;
         actualStimulus{t}=whyStim{Seeker(t,3)};
-        
+
     elseif Seeker(t,2)==2   % how trial
-        
+
         Screen('DrawTexture',w, howTex{Seeker(t,3)});
         Screen('Flip',w);
         stimStart=GetSecs;
         actualStimulus{t}=howStim{Seeker(t,3)};
-        
+
     elseif Seeker(t,2)==3   % math trial
-        
+
         Screen('DrawTexture',w, mathTex{Seeker(t,3)});
         Screen('Flip',w);
         stimStart=GetSecs;
         actualStimulus{t}=mathStim{Seeker(t,3)};
-        
+
     end
-    
+
     %-----------------
     % Record response
-    %----------------- 
+    %-----------------
     while GetSecs - stimStart < stimDur,
        [keyIsDown,secs,keyCode]=KbCheck(inputDevice);
        if keyIsDown && (keyCode(buttonOne) || keyCode(buttonTwo))
@@ -339,8 +339,8 @@ for t=1:nTrials
                 Seeker(t,7)=2;
             end
        end;
-    end; 
-        
+    end;
+
     %------------------------------------------------------
     % Present fixation cross during interstimulus interval
     %------------------------------------------------------
@@ -350,7 +350,7 @@ for t=1:nTrials
     if Seeker(t,9)==0,   % if they did not respond to stimulus, look for button press
        while GetSecs - anchor < (Seeker(t,4) + 5)
        [keyIsDown,secs,keyCode]=KbCheck(inputDevice);
-           if keyIsDown==1 && (keyCode(buttonOne) || keyCode(buttonTwo)),  
+           if keyIsDown==1 && (keyCode(buttonOne) || keyCode(buttonTwo)),
                 Seeker(t,9)=secs-stimStart;
                 noresp=0;
                 if keyCode(buttonOne)
@@ -376,18 +376,18 @@ for t=1:nTrials
     if t~=nTrials
         WaitSecs('UntilTime', anchor + Seeker(t+1,4));
     end;
-    
+
     if Seeker(t,7)==0,
        Seeker(t,10)=1;
     end;
-       
+
     % PRINT TRIAL INFO TO LOG FILE
     try
         fprintf(fid,'%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',Seeker(t,1:12));
     catch   % if sub responds weirdly, trying to print the resp crashes the log file...instead print "ERR"
         fprintf(fid,'ERROR SAVING THIS TRIAL\n');
     end;
-    
+
 end;    % end of trial loop
 
 WaitSecs(addEnd);
